@@ -6,10 +6,10 @@ import { generateWords } from '../helpers.js';
 
 let index = 0;
 
-const entriesFilename = './files/entries.json';
+// const entriesFilename = './files/entries.json';
 const resultsFilename = './files/results.json';
 
-let entries = JSON.parse(fs.readFileSync(entriesFilename));
+// let entries = JSON.parse(fs.readFileSync(entriesFilename));
 let results = JSON.parse(fs.readFileSync(resultsFilename));
 
 async function main() {
@@ -17,14 +17,15 @@ async function main() {
 
   let phrase = generateWords();
 
-  if (entries.includes(phrase)) {
-    setTimeout(function () {
-      console.log('Entry exists');
-      return main();
-    }, 0);
-  }
+  // if (entries.includes(phrase)) {
+  //   setTimeout(function () {
+  //     console.log('Entry exists');
+  //     return main();
+  //   }, 0);
+  // }
 
-  const seed = Bip39.mnemonicToSeedSync(phrase).slice(0, 32);
+  const seedRaw = await Bip39.mnemonicToSeed(phrase);
+  const seed = seedRaw.slice(0, 32);
   const account = Keypair.fromSeed(seed);
   const pubKey = account.publicKey.toString();
 
@@ -37,8 +38,8 @@ async function main() {
     console.error('CHECK FILE', phrase);
 
   } else {
-    entries.push({ phrase });
-    await fsPromise.writeFile(entriesFilename, JSON.stringify(entries));
+    // entries.push({ phrase });
+    // await fsPromise.writeFile(entriesFilename, JSON.stringify(entries));
     setTimeout(function () {
       return main();
     }, 0);
